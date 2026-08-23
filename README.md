@@ -1,7 +1,7 @@
 # PTQ-NAS-Bench: A Multi-Scheme Post-Training Quantization Benchmark for Hardware-Efficient Architecture and Scheme Co-Search
 
-![Python 3.7.16](https://img.shields.io/badge/python-3.7.16_(PTQ)-blue.svg)
-![Python 3.10.19](https://img.shields.io/badge/python-3.10.19_(Predictors)-blue.svg)
+![Python 3.7.16](https://img.shields.io/badge/python-3.7.16_(Predictors)-blue.svg)
+![Python 3.10.19](https://img.shields.io/badge/python-3.10.19_(PTQ)-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=flat&logo=PyTorch&logoColor=white)
 
 ## 📖 Abstract
