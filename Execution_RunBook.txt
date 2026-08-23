@@ -1,0 +1,208 @@
+================================================================================
+               PTQ-NAS-Bench & PTQ-CONAQ - EXECUTION RUNBOOK
+================================================================================
+
+--------------------------------------------------------------------------------
+[ 0. BENCHMARK GENERATION (Benchmark_scripts) ]
+--------------------------------------------------------------------------------
+
+Script      : nas_bench_201_extract_models.py
+Description : Extract NATS-Bench weights and divide them into buckets/chunks.
+Run Command :
+python3 Benchmark_scripts/nas_bench_201_extract_models.py \
+    --project_root "." \
+    --weights-folder "./NATS_Benchmark/Model_weights/Weights/" \
+    --output-root "./outputs/three_way_out" \
+    --chunk-size 200
+
+................................................................................
+
+Script      : worker_server_bucket_chunks.py
+Description : Execute the PTQ and Fine-Tuning (QAT) process on a specific bucket.
+              (Internally imports ptq_main.py and nas_bench_201_workflow_multithread.py)
+Run Command :
+python3 Benchmark_scripts/worker_server_bucket_chunks.py \
+    --project_root "." \
+    --bucket_dir "./outputs/three_way_out/bucket_0" \
+    --csv_file "./outputs/PTQ_Results/bucket_0_results.csv" \
+    --done_file "./outputs/three_way_out/bucket_0/progress_done_ids.txt" \
+    --fail_file "./outputs/three_way_out/bucket_0/progress_failed_ids.txt"
+
+--------------------------------------------------------------------------------
+[ 1. DATA PROCESSING (PTQ_Conaq/data_processing) ]
+--------------------------------------------------------------------------------
+
+Script      : QNP_calc.py
+Description : Extract QNP values from NATS-Bench weights.
+Run Command :
+python3 PTQ_Conaq/data_processing/QNP_calc.py \
+    --naszilla_dir "./naszilla" \
+    --data_dir "./data" \
+    --weights_pattern "./NATS_Benchmark/Model_weights/Weights/NATS-tss-v1_0-3ffb9-full.tara*" \
+    --output_dir "./outputs/Final_Merged/" \
+    --scheme Q4
+
+................................................................................
+
+Script      : BOPs_calc.py
+Description : Calculate and integrate BitOps (FLOPs * bw * ba).
+Run Command :
+python3 PTQ_Conaq/data_processing/BOPs_calc.py \
+    --fp32_csv "./datasets/FP32/edgegpu_dataset_with_flops.csv" \
+    --input_dir "./datasets/PTQ_Metrics/" \
+    --output_dir "./outputs/Final_Merged/"
+
+................................................................................
+
+Script      : Quant_Acc_merge.py
+Description : Merge the Quantized Accuracy results into the dataset.
+Run Command :
+python3 PTQ_Conaq/data_processing/Quant_Acc_merge.py \
+    --acc_dir "./datasets/PTQ_Benchmark/" \
+    --input_dir "./datasets/PTQ_Metrics_and_Results/Dataset/" \
+    --output_dir "./outputs/Final_Complete_Datasets/"
+
+................................................................................
+
+Script      : FP32_Acc_merge.py
+Description : Merge the FP32 baseline accuracy into the dataset.
+Run Command :
+python3 PTQ_Conaq/data_processing/FP32_Acc_merge.py \
+    --fp32_csv "./datasets/FP32/edgegpu_dataset_with_flops.csv" \
+    --target_dir "./datasets/BenchMark_Q_schemes/Datasets/FP32_acc"
+
+................................................................................
+
+Script      : lnQNP_lnQNPFP32acc.py
+Description : Calculate the Proxy Features for Pareto Ranking.
+Run Command (For 3D - ln(QNP+1)):
+python3 PTQ_Conaq/data_processing/lnQNP_lnQNPFP32acc.py \
+    --input_dir "./datasets/FP32_acc/QNPxFP32acc" \
+    --output_dir "./datasets/Final_Features"
+
+Run Command (For 2D - ln(QNP) x FP32_acc):
+python3 PTQ_Conaq/data_processing/lnQNP_lnQNPFP32acc.py \
+    --input_dir "./datasets/FP32_acc/QNPxFP32acc" \
+    --output_dir "./datasets/Final_Features" \
+    --multiply_fp32
+
+
+--------------------------------------------------------------------------------
+[ 2. UTILITIES (PTQ_Conaq/utils) ]
+--------------------------------------------------------------------------------
+
+Script      : ptq_config_dataset.py
+Description : Utility to test CIFAR-10 dataset loading and initialize PTQ configs.
+Run Command :
+python3 PTQ_Conaq/utils/ptq_config_dataset.py \
+    --data_dir "./datasets/cifar-10-batches-py"
+
+................................................................................
+
+Script      : add_rank.py
+Description : Calculate Global Pareto Rankings based on the proxy features.
+Run Command (For 3D):
+python3 PTQ_Conaq/utils/add_rank.py \
+    --input_dir "./datasets/Final_Features"
+
+Run Command (For 2D):
+python3 PTQ_Conaq/utils/add_rank.py \
+    --input_dir "./datasets/Final_Features" \
+    --multiply_fp32
+
+................................................................................
+
+Script      : LHS_script.py
+Description : Extract architecture subsets using Latin HyperCube Sampling (LHS).
+Run Command :
+python3 PTQ_Conaq/utils/LHS_script.py \
+    --input_csv "./datasets/Final_train_dataset/Q4/final_dataset_Q4_2W2A_FP32Acc_with_LogQNP_ranked.csv" \
+    --output_csv "./datasets/Final_train_dataset/Q4/LHS/lhs_dataset_4000_Q4_2W2A_FP32_with_LogQNP.csv" \
+    --num_samples 4000 \
+    --target_features "log(QNP)xFP32_acc" "BitOps"
+
+................................................................................
+
+Script      : embeddings_add.py
+Description : Merge LHS datasets with Encoded FP32 architectures for MLP.
+Run Command :
+python3 PTQ_Conaq/utils/embeddings_add.py \
+    --lhs_csv "./datasets/FP32_acc/LHS/lhs_dataset_4000_Q4_2W2A_FP32Acc.csv" \
+    --encoded_csv "./datasets/FP32/encoded_fully_dataset_cifar10_pooling_edgegpu_flops_fp32.csv" \
+    --output_csv "./datasets/FP32_acc/Encoded_LHS/encoded_lhs_Q4_2W2A_FP32Acc.csv"
+
+
+--------------------------------------------------------------------------------
+[ 3. MODELS & PREDICTOR (PTQ_Conaq/models) ]
+--------------------------------------------------------------------------------
+
+Script      : pareto_train_10_fold_cross_val.py
+Description : Train the Pareto Rank Predictor using ListMLE and 10-Fold CV.
+Run Command :
+python3 PTQ_Conaq/models/pareto_train_10_fold_cross_val.py \
+    --project_root "." \
+    --dataset_csv "./datasets/Encoded_LHS/encoded_lhs_Q4_2W2A_FP32_with_LogQNP.csv" \
+    --output_dir "./outputs/Predictors/Q4" \
+    --scheme Q4 \
+    --bits 2W2A \
+    --epochs 120 \
+    --batch_size 18
+
+
+--------------------------------------------------------------------------------
+[ 4. SEARCH ALGORITHMS (PTQ_Conaq/search_strategies) ]
+--------------------------------------------------------------------------------
+
+Script      : search_algos.py
+Description : Execute the Random Search (RS) and MOEA (NSGA-II) algorithms.
+Run Command :
+python3 PTQ_Conaq/search_strategies/search_algos.py \
+    --project_root "." \
+    --output_dir "./outputs/Experiments/Rank_Dist_RS_MOEA/Results" \
+    --num_runs 200
+
+
+--------------------------------------------------------------------------------
+[ 5. VISUALIZATION (PTQ_Conaq/visualization) ]
+--------------------------------------------------------------------------------
+
+Script      : rs_vs_moea_boxplot.py
+Description : Generate a Boxplot comparing the RS and MOEA search strategies.
+Run Command :
+python3 PTQ_Conaq/visualization/rs_vs_moea_boxplot.py \
+    --input_csv "./outputs/Experiments/Rank_Dist_RS_MOEA/Results/rs_vs_moea_ranks_budget100_200runs.csv" \
+    --output_figure "./outputs/Experiments/Rank_Dist_RS_MOEA/rs_vs_moea_boxplot.png"
+
+................................................................................
+
+Script      : unified_pareto.py
+Description : Generate the Unified Pareto Space scatter plot across all schemes.
+Run Command :
+python3 PTQ_Conaq/visualization/unified_pareto.py \
+    --data_dir "./datasets/Final_eval_dataset" \
+    --runs_csv "./datasets/Figures/RS_vs_MOEA/nas_experiment_RS_vs_MOEA_50runs.csv" \
+    --output_figure "./outputs/Experiments/Unified_pareto_front/joint_pareto_all_50runs_points.png"
+
+................................................................................
+
+Script      : corr_QNP_vs_Qacc.py
+Description : Plot Quantized Accuracy vs QNP to visualize correlation.
+Run Command :
+python3 PTQ_Conaq/visualization/corr_QNP_vs_Qacc.py \
+    --input_dir "./datasets/Quant_acc" \
+    --output_dir "./outputs/plots"
+
+................................................................................
+
+Script      : post_finetune_fp32.py
+Description : Generate Boxplots for Accuracy Drop and Accuracy Gain.
+Run Command :
+python3 PTQ_Conaq/visualization/post_finetune_fp32.py \
+    --fp32_csv "./datasets/FP32/edgegpu_dataset_with_flops.csv" \
+    --quant_dir "./datasets/Final_eval_dataset" \
+    --backup_dir "./datasets/BackUp" \
+    --output_dir "./outputs/Figures/Acc_drop_dist_BitOps"
+
+================================================================================
+                             END OF RUNBOOK
+================================================================================
