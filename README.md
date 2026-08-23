@@ -28,7 +28,7 @@ Together, these contributions establish a reproducible foundation for hardware-a
 
 *   **Comprehensive PTQ Benchmark:** Ground-truth quantized accuracy for all 15,625 NAS-Bench-201 architectures on CIFAR-10.
 *   **Multiple Quantization Schemes:** Extensive evaluation across four diverse bitwidth schemes: Q1 (8W8A), Q2 (4W4A), Q3 (2W8A), and Q4 (2W2A).
-*   **Zero-Cost PTQ Sensitivity Metric:** Introduction and implementation of the **Quantization Noise Proxy (QNP)**.
+*   **PTQ Sensitivity Metric:** Introduction and implementation of the **Quantization Noise Proxy (QNP)**.
 *   **Multi-Head Pareto Rank Predictor:** A ListMLE-trained Multi-Layer Perceptron (MLP) evaluated via 10-Fold Cross Validation, utilizing Latin Hypercube Sampling (LHS) for robust training data selection.
 *   **Hardware-Aware Co-Search:** Integrated Multi-Objective Evolutionary Algorithm (MOEA / NSGA-II) and Random Search (RS) pipelines to find optimal architecture-scheme pairs.
 
