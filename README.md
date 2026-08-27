@@ -64,10 +64,27 @@ Before running the benchmark scripts, ensure you have installed and downloaded t
 
 ### 2. PTQ Benchmark Generation Environment (Python 3.10.19)
 This environment is used for running the scripts inside the `Benchmark_scripts/` folder. It handles the extraction of the NATS-Bench weights and the quantization-aware fine-tuning.
+To set up the environment for the benchmark generation, you need to install the necessary libraries required to run all the scripts. Please follow this instruction:
+
+```bash
+pip install -r requirements_bench.txt
+```
+### 📥 Pre-computed Benchmark Dataset (Zenodo)
+
+Generating the benchmark from scratch is a highly time-consuming process. Therefore, we have pre-computed the entire benchmark. You can download the complete, ready-to-use dataset—which is required for the PTQ-CoNAQ pipeline, but can also be used for independent exploration with different approaches—directly from Zenodo:
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21852794.svg)](https://zenodo.org/records/21852794)
+
+**Download Link:** [PTQ-NAS-Bench Dataset on Zenodo](https://zenodo.org/records/21852794)
 
 ### 3. Predictors & Co-Search Environment (Python 3.7.16)
-This environment is strictly used for all scripts inside the `PTQ_Conaq/` folder. It handles data processing, predictor training (MLP), evolutionary search algorithms, and visualization.
 
+This environment is strictly used for all scripts inside the `PTQ_Conaq/` folder. It handles data processing, predictor training (MLP), evolutionary search algorithms, and visualization.
+To set up the environment for the PTQ-CoNAQ search pipeline and predictors, you need to install the necessary libraries required to run the corresponding scripts. Please follow this instruction:
+
+```bash
+pip install -r requirements_conaq.txt
+```
 ---
 
 ## 🚀 How to Run (Quick Start)
