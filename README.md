@@ -60,6 +60,7 @@ Before running the benchmark scripts, ensure you have installed and downloaded t
 *   **NATS-Bench API:** You must install the official NATS-Bench repository to access the architecture topologies. Follow the instructions here: [https://github.com/D-X-Y/NATS-Bench](https://github.com/D-X-Y/NATS-Bench).
 *   **NATS-Bench Weights:** Download the full weights (`NATS-tss-v1_0-3ffb9-full.tara*`) from the official NATS-Bench repository.
 *   **CIFAR-10 Dataset:** Download the Python version of CIFAR-10 batches.
+*   **Naszilla Repository:** Certain data processing scripts require the Naszilla framework. You must clone their repository into your workspace from here: [https://github.com/naszilla/naszilla](https://github.com/naszilla/naszilla).
 *   *Note:* Update the base paths in `Execution_RunBook.txt` to point to your local download directories.
 
 ### 2. PTQ Benchmark Generation Environment (Python 3.10.19)
