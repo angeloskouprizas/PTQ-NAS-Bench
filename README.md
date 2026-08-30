@@ -80,8 +80,8 @@ Generating the benchmark from scratch is a highly time-consuming process. Theref
 
 ### 3. Predictors & Co-Search Environment (Python 3.7.16)
 
-This environment is strictly used for all scripts inside the `PTQ_Conaq/` folder. It handles data processing, predictor training (MLP), evolutionary search algorithms, and visualization.
-To set up the environment for the PTQ-CoNAQ search pipeline and predictors, you need to install the necessary libraries required to run the corresponding scripts. Please follow this instruction:
+This environment is strictly used for all scripts inside the `PTQ_Conaq/` folder. It handles data processing, encoding, predictor training (MLP), evolutionary search algorithms, and visualization.
+To set up the environment for the PTQ-CoNAQ search pipeline, encoder, and predictors, you need to install the necessary libraries required to run the corresponding scripts and verify that the Zenodo dataset is correctly placed in your workspace. Please follow this instruction:
 
 ```bash
 pip install -r requirements_conaq.txt
@@ -96,8 +96,9 @@ The overall pipeline operates in the following sequence:
 1. **Benchmark Generation:** Extracting weights and executing PTQ & Fine-tuning for all architectures.
 2. **Data Processing:** Calculating QNP, BitOps, and Proxy Features.
 3. **Utilities:** Applying Latin Hypercube Sampling (LHS) and Global Pareto Ranking.
-4. **Models:** Training the Multi-Head Pareto Rank Predictor (ListMLE).
-5. **Search Strategies:** Running the hardware-aware Co-Search (MOEA / RS).
-6. **Visualization:** Generating the plots and boxplots used in the paper.
+4. **Architecture Encoding:** Generating FE cache, training the GCN-LSTM encoder, and exporting the pre-computed embeddings.
+5. **Models:** Training the Multi-Head Pareto Rank Predictor (ListMLE).
+6. **Search Strategies:** Running the hardware-aware Co-Search (MOEA / RS).
+7. **Visualization:** Generating the plots and boxplots used in the paper.
 
 ---
