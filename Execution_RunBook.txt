@@ -3,7 +3,7 @@
 ================================================================================
 
 --------------------------------------------------------------------------------
-[ 0. BENCHMARK GENERATION (Benchmark_scripts) ]
+[ 0. BENCHMARK GENERATION (Benchmark_scripts) ] -> Env: ptq_bench (Python 3.10)
 --------------------------------------------------------------------------------
 
 Script      : nas_bench_201_extract_models.py
@@ -19,7 +19,6 @@ python3 Benchmark_scripts/nas_bench_201_extract_models.py \
 
 Script      : worker_server_bucket_chunks.py
 Description : Execute the PTQ and Fine-Tuning (QAT) process on a specific bucket.
-              (Internally imports ptq_main.py and nas_bench_201_workflow_multithread.py)
 Run Command :
 python3 Benchmark_scripts/worker_server_bucket_chunks.py \
     --project_root "." \
@@ -28,8 +27,9 @@ python3 Benchmark_scripts/worker_server_bucket_chunks.py \
     --done_file "./outputs/three_way_out/bucket_0/progress_done_ids.txt" \
     --fail_file "./outputs/three_way_out/bucket_0/progress_failed_ids.txt"
 
+
 --------------------------------------------------------------------------------
-[ 1. DATA PROCESSING (PTQ_Conaq/data_processing) ]
+[ 1. DATA PROCESSING (PTQ_Conaq/data_processing) ] -> Env: ptq_conaq (Python 3.7)
 --------------------------------------------------------------------------------
 
 Script      : QNP_calc.py
@@ -75,6 +75,7 @@ python3 PTQ_Conaq/data_processing/FP32_Acc_merge.py \
 
 Script      : lnQNP_lnQNPFP32acc.py
 Description : Calculate the Proxy Features for Pareto Ranking.
+
 Run Command (For 3D - ln(QNP+1)):
 python3 PTQ_Conaq/data_processing/lnQNP_lnQNPFP32acc.py \
     --input_dir "./datasets/FP32_acc/QNPxFP32acc" \
@@ -88,7 +89,7 @@ python3 PTQ_Conaq/data_processing/lnQNP_lnQNPFP32acc.py \
 
 
 --------------------------------------------------------------------------------
-[ 2. UTILITIES (PTQ_Conaq/utils) ]
+[ 2. UTILITIES (PTQ_Conaq/utils) ] -> Env: ptq_conaq (Python 3.7)
 --------------------------------------------------------------------------------
 
 Script      : ptq_config_dataset.py
@@ -101,6 +102,7 @@ python3 PTQ_Conaq/utils/ptq_config_dataset.py \
 
 Script      : add_rank.py
 Description : Calculate Global Pareto Rankings based on the proxy features.
+
 Run Command (For 3D):
 python3 PTQ_Conaq/utils/add_rank.py \
     --input_dir "./datasets/Final_Features"
@@ -133,7 +135,48 @@ python3 PTQ_Conaq/utils/embeddings_add.py \
 
 
 --------------------------------------------------------------------------------
-[ 3. MODELS & PREDICTOR (PTQ_Conaq/models) ]
+[ 3. ARCHITECTURE ENCODING (PTQ_Conaq/models/Encoding) ] -> Env: ptq_conaq
+--------------------------------------------------------------------------------
+
+Script      : fe_offline_process_extraction.py
+Description : Pre-compute the Feature Extraction (FE) properties for all 15,625 architectures.
+Run Command :
+python3 PTQ_Conaq/models/Encoder/fe_offline_process_extraction.py \
+    --naszilla_dir "./naszilla" \
+    --project_root "." \
+    --dataset_name "cifar10" \
+    --output_file "./datasets/nas201_fe_cache.pt"
+
+................................................................................
+
+Script      : training.py
+Description : Train the Scheme-Agnostic GCN-LSTM Architecture Encoder.
+Run Command :
+python3 PTQ_Conaq/models/Encoder/training.py \
+    --naszilla_dir "./naszilla" \
+    --project_root "." \
+    --cache_file "./datasets/nas201_fe_cache.pt" \
+    --epochs 100 \
+    --batch_size 32 \
+    --lr 1e-4 \
+    --checkpoint_dir "./outputs/Checkpoints/Encoder"
+
+................................................................................
+
+Script      : create_dataset_pre_encoding.py
+Description : Embed the LHS dataset using the trained Encoder to speed up MLP training.
+Run Command :
+python3 PTQ_Conaq/models/Encoder/create_dataset_pre_encoding.py \
+    --naszilla_dir "./naszilla" \
+    --project_root "." \
+    --input_csv "./datasets/Final_train_dataset/Q4/LHS/lhs_dataset_4000_Q4_2W2A_FP32_with_LogQNP.csv" \
+    --cache_file "./datasets/nas201_fe_cache.pt" \
+    --checkpoint_path "./outputs/Checkpoints/Encoder/autoencoder_epoch_99.pth" \
+    --output_csv "./datasets/Encoded_LHS/encoded_lhs_Q4_2W2A_FP32_with_LogQNP.csv"
+
+
+--------------------------------------------------------------------------------
+[ 4. MODELS & PREDICTOR (PTQ_Conaq/models) ] -> Env: ptq_conaq
 --------------------------------------------------------------------------------
 
 Script      : pareto_train_10_fold_cross_val.py
@@ -150,7 +193,7 @@ python3 PTQ_Conaq/models/pareto_train_10_fold_cross_val.py \
 
 
 --------------------------------------------------------------------------------
-[ 4. SEARCH ALGORITHMS (PTQ_Conaq/search_strategies) ]
+[ 5. SEARCH ALGORITHMS (PTQ_Conaq/search_strategies) ] -> Env: ptq_conaq
 --------------------------------------------------------------------------------
 
 Script      : search_algos.py
@@ -163,7 +206,7 @@ python3 PTQ_Conaq/search_strategies/search_algos.py \
 
 
 --------------------------------------------------------------------------------
-[ 5. VISUALIZATION (PTQ_Conaq/visualization) ]
+[ 6. VISUALIZATION (PTQ_Conaq/visualization) ] -> Env: ptq_conaq
 --------------------------------------------------------------------------------
 
 Script      : rs_vs_moea_boxplot.py
