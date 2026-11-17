@@ -128,7 +128,7 @@ class PTQConfig:
         self.act_equalization = None  # choices: 'fx', 'layerwise', None
         self.graph_eq_iterations = 20
         self.graph_eq_merge_bias = True
-        self.bias_corr = True
+        self.bias_corr = None
         self.weight_narrow_range = False
         
         # Advanced quantization methods
