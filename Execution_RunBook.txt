@@ -92,14 +92,6 @@ python3 PTQ_Conaq/data_processing/lnQNP_lnQNPFP32acc.py \
 [ 2. UTILITIES (PTQ_Conaq/utils) ] -> Env: ptq_conaq (Python 3.7)
 --------------------------------------------------------------------------------
 
-Script      : ptq_config_dataset.py
-Description : Utility to test CIFAR-10 dataset loading and initialize PTQ configs.
-Run Command :
-python3 PTQ_Conaq/utils/ptq_config_dataset.py \
-    --data_dir "./datasets/cifar-10-batches-py"
-
-................................................................................
-
 Script      : add_rank.py
 Description : Calculate Global Pareto Rankings based on the proxy features.
 
