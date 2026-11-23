@@ -92,7 +92,7 @@ def plot_all_50runs_noline(data_dir, runs_csv, output_figure):
         })
         # MOEA Point
         search_records.append({
-            "Scheme": scheme, "Algorithm": "MOEA (NSGA-II)", 
+            "Scheme": scheme, "Algorithm": "MOEA", 
             "BitOps": row["MOEA_Best_BitOps"], "Accuracy": moea_acc, "Run_ID": run_id
         })
         
@@ -112,7 +112,7 @@ def plot_all_50runs_noline(data_dir, runs_csv, output_figure):
         color = config["alg_color"]
         
         rs_data = s_data[s_data["Algorithm"] == "Random Search"]
-        moea_data = s_data[s_data["Algorithm"] == "MOEA (NSGA-II)"]
+        moea_data = s_data[s_data["Algorithm"] == "MOEA"]
         
         # Random Search -> Crosses (X) with the scheme's color
         ax.scatter(rs_data["BitOps"], rs_data["Accuracy"], color=color, marker="X", s=50, edgecolor="black", linewidth=0.5, zorder=5, alpha=0.7)
@@ -132,7 +132,7 @@ def plot_all_50runs_noline(data_dir, runs_csv, output_figure):
         Line2D([0], [0], marker='o', color='w', label='INT4w4a', markerfacecolor='#2ca02c', markersize=9),
         Line2D([0], [0], marker='o', color='w', label='INT2w8a', markerfacecolor='#ff7f0e', markersize=9),
         Line2D([0], [0], marker='o', color='w', label='INT2w2a', markerfacecolor='#9467bd', markersize=9),
-        Line2D([0], [0], marker='*', color='w', label='MOEA (NSGA-II - All Runs)', markerfacecolor='gray', markeredgecolor='black', markersize=14),
+        Line2D([0], [0], marker='*', color='w', label='MOEA (All Runs)', markerfacecolor='gray', markeredgecolor='black', markersize=14),
         Line2D([0], [0], marker='X', color='w', label='Random Search (All Runs)', markerfacecolor='gray', markeredgecolor='black', markersize=10),
     ]
     
