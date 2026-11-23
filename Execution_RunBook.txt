@@ -196,6 +196,17 @@ python3 PTQ_Conaq/search_strategies/search_algos.py \
     --output_dir "./outputs/Experiments/Rank_Dist_RS_MOEA/Results" \
     --num_runs 200
 
+................................................................................
+
+Script      : select_scheme_eval.py
+Description : Evaluate SelectScheme against fixed-scheme and naive policies
+              (Table 8) and run the ranking ablation (QNP targets, FP32+BitOps,
+              ground-truth fronts). Reads the 'Main PTQ-NAS-Bench' sheet of the
+              released workbook, the reference file for all reported results.
+              Requires openpyxl.
+Run Command :
+python3 PTQ_Conaq/search_strategies/select_scheme_eval.py \
+    "./PTQ-NAS-Bench.xlsx"
 
 --------------------------------------------------------------------------------
 [ 6. VISUALIZATION (PTQ_Conaq/visualization) ] -> Env: ptq_conaq
