@@ -267,7 +267,7 @@ if __name__ == "__main__":
                 boxplot_data.append({
                     "Scheme": scheme_name,
                     "Run": run,
-                    "Algorithm": "MOEA (NSGA-II)",
+                    "Algorithm": "MOEA",
                     "Global Actual Rank": true_rank
                 })
                 
