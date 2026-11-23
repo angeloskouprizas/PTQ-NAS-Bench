@@ -30,7 +30,7 @@ Together, these contributions establish a reproducible foundation for hardware-a
 *   **Multiple Quantization Schemes:** Extensive evaluation across four diverse bitwidth schemes: Q1 (8W8A), Q2 (4W4A), Q3 (2W8A), and Q4 (2W2A).
 *   **PTQ Sensitivity Metric:** Introduction and implementation of the **Quantization Noise Proxy (QNP)**.
 *   **Multi-Head Pareto Rank Predictor:** A ListMLE-trained Multi-Layer Perceptron (MLP) evaluated via 10-Fold Cross Validation, utilizing Latin Hypercube Sampling (LHS) for robust training data selection.
-*   **Hardware-Aware Co-Search:** Integrated Multi-Objective Evolutionary Algorithm (MOEA / NSGA-II) and Random Search (RS) pipelines to find optimal architecture-scheme pairs.
+*   **Hardware-Aware Co-Search:** Integrated Multi-Objective Evolutionary Algorithm (MOEA) and Random Search (RS) pipelines to find optimal architecture-scheme pairs.
 
 ## 📂 Repository Structure
 
@@ -43,7 +43,7 @@ PTQ_NAS_BENCH_GitHub/
 ├── PTQ_Conaq/              # The core PTQ-CoNAQ search pipeline
 │   ├── data_processing/    # Feature extraction, QNP calculation, and dataset merging
 │   ├── models/             # Pareto Rank Predictor (ListMLE MLP) training and evaluation
-│   ├── search_strategies/  # Random Search and MOEA (NSGA-II) implementations
+│   ├── search_strategies/  # Random Search and MOEA implementations
 │   ├── utils/              # Helper scripts (LHS sampling, PTQ configurations, Pareto ranking)
 │   └── visualization/      # Plotting scripts (Accuracy Drop, Pareto Fronts, Correlations)
 ├── Execution_RunBook.txt   # Step-by-step terminal commands to reproduce the entire project
