@@ -189,7 +189,7 @@ python3 PTQ_Conaq/models/pareto_train_10_fold_cross_val.py \
 --------------------------------------------------------------------------------
 
 Script      : search_algos.py
-Description : Execute the Random Search (RS) and MOEA (NSGA-II) algorithms.
+Description : Execute the Random Search (RS) and MOEA algorithms.
 Run Command :
 python3 PTQ_Conaq/search_strategies/search_algos.py \
     --project_root "." \
