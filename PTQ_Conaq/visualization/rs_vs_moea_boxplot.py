@@ -23,10 +23,10 @@ def plot_rs_vs_moea(input_csv, output_figure):
     fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
 
     # Define order and colors
-    hue_order = ["Random Search", "MOEA (NSGA-II)"]
+    hue_order = ["Random Search", "MOEA"]
     palette = {
         "Random Search": "#1f77b4",    # Blue (baseline)
-        "MOEA (NSGA-II)": "#2ca02c"    # Green (evolutionary algorithm)
+        "MOEA": "#2ca02c"    # Green (evolutionary algorithm)
     }
 
     sns.boxplot(
