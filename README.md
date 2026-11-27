@@ -6,15 +6,15 @@
 
 ## 📖 Abstract
 
-This paper presents **PTQ-NAS-Bench**, a multi-scheme Post-Training Quantization (PTQ) extension of the NAS-Bench-201 Neural Architecture Search (NAS) benchmark, and **PTQ-CoNAQ**, a joint architecture-scheme-hardware mapping search pipeline built upon it. 
+## Abstract
 
-**PTQ-NAS-Bench** releases ground-truth quantized accuracy for all **15,625 CIFAR-10 architectures** under four diverse PTQ schemes, spanning both 8-bit and sub-8-bit weight and activation bitwidths. These ground truths were obtained through an exhaustive 324-configuration sweep of the PTQ design space. 
+This paper presents **PTQ-NAS-Bench**, a multi-scheme Post-Training Quantization (PTQ) extension of the NAS-Bench-201 Neural Architecture Search (NAS) benchmark, and **PTQ-CoNAQ**, a reference BitOps-constrained architecture-scheme search pipeline with downstream hardware mapping.
 
-**PTQ-CoNAQ** scores candidates with a zero-cost PTQ sensitivity metric, converts those scores into scheme-specific rankings, exports the top ten candidates across schemes based on a hardware cost budget, and finally returns customized hardware accelerators for edge processing. 
+**PTQ-NAS-Bench** releases ground-truth quantized accuracy—both after PTQ and two epochs of fine-tuning—for up to **15,625 CIFAR-10 architectures** under four PTQ schemes with 8-bit and sub-8-bit weights and activations, obtained through a 324-configuration PTQ sweep.
 
-Our reference metric, the **Quantization Noise Proxy (QNP)**, attains Spearman correlations of **-0.81, -0.83, and -0.52** against measured accuracy at 8-bit, 4-bit, and 2-bit quantization schemes respectively. Furthermore, our scheme-selection policy reduces the mean accuracy regret against an oracle to **2.40 points at 0.25 GBitOps**, against 4.96 for random selection. 
+**PTQ-CoNAQ** scores candidates with a zero-cost PTQ sensitivity metric, ranks them per scheme, and exports the top ten candidates across schemes based on a hardware cost budget for mapping to edge accelerators. Our reference metric, the **Quantization Noise Proxy (QNP)**, attains Spearman correlations of **−0.69, −0.71, and −0.43** over all measured architectures against measured accuracy at 8-bit, 4-bit, and 2-bit-weight schemes, respectively. Meanwhile, our scheme-selection policy achieves a mean accuracy regret of **2.44 points** against an oracle at **0.25 GBitOps**, compared to 4.98 for random selection.
 
-Together, these contributions establish a reproducible foundation for hardware-aware NAS under realistic deployment precision.
+Overall, the results reveal that QNP does not improve upon FP32 accuracy and BitOps, while a *most-expensive-feasible* scheme policy performs better at every budget. Together, these contributions establish a reproducible foundation for hardware-aware NAS under realistic deployment precision.
 
 <p align="center">
   <img src="Figures/Architecture.png" alt="PTQ-CoNAQ Overview Pipeline" width="85%">
